@@ -13,13 +13,22 @@ export default function App() {
     loadProfiles();
   }, []);
 
+  const [initialLoadDone, setInitialLoadDone] = useState(false);
+
   const loadProfiles = async () => {
     const loadedProfiles = await window.electronAPI.getProfiles();
     setProfiles(loadedProfiles);
     if (loadedProfiles.length > 0 && !activeProfileId) {
       setActiveProfileId(loadedProfiles[0].id);
     }
+    setInitialLoadDone(true);
   };
+
+  useEffect(() => {
+    if (initialLoadDone && profiles.length === 0 && currentView !== 'settings') {
+      setCurrentView('settings');
+    }
+  }, [initialLoadDone, profiles.length, currentView]);
 
   const activeProfile = profiles.find(p => p.id === activeProfileId);
 

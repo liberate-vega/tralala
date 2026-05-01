@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Wizard from './Wizard';
 
 interface Props {
@@ -10,6 +10,12 @@ interface Props {
 
 export default function SettingsView({ profiles, onProfileSaved, activeProfileId, onSelectActiveProfile }: Props) {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
+
+  useEffect(() => {
+    if (profiles.length === 0) {
+      setIsWizardOpen(true);
+    }
+  }, [profiles.length]);
 
   return (
     <div className="max-w-4xl mx-auto p-8 overflow-y-auto h-full">
