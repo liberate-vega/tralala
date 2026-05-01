@@ -44,7 +44,9 @@ export function getBooks() {
       if (fs.existsSync(jsonPath)) {
         try {
           bookData = JSON.parse(fs.readFileSync(jsonPath, 'utf-8'));
-        } catch(e) {}
+        } catch(e) {
+          console.warn(`Failed to parse book.json for ${dirent.name}`, e);
+        }
       }
       return bookData;
     });
