@@ -127,3 +127,16 @@ export function getFileBase64(filePath: string): string {
         return '';
     }
 }
+
+export function deleteBook(bookId: string) {
+    try {
+        const bookPath = path.join(BOOKS_DIR, bookId);
+        if (fs.existsSync(bookPath)) {
+            fs.rmSync(bookPath, { recursive: true, force: true });
+            return { success: true };
+        }
+        return { success: false, error: 'Book not found' };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}

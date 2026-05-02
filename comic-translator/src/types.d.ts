@@ -8,6 +8,7 @@ export interface ElectronAPI {
   getUserDataPath: () => Promise<string>;
   getFileBase64: (filePath: string) => Promise<string>;
   translateImage: (base64Image: string, profile: any, mimeType: string) => Promise<string>;
+  deleteBook: (bookId: string) => Promise<any>;
 }
 
 declare global {

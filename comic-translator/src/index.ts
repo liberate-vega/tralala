@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain, protocol, net } from 'electron';
-import { initDirectories, getProfiles, saveProfile, getBooks, createBook, openImagesDialog, saveBookTranscript, getFileBase64, USER_DATA_PATH } from './fileSystem';
+import { initDirectories, getProfiles, saveProfile, getBooks, createBook, openImagesDialog, saveBookTranscript, getFileBase64, deleteBook, USER_DATA_PATH } from './fileSystem';
 import { translateImage } from './utils/llmApi';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
@@ -40,8 +40,14 @@ app.on('activate', () => {
 
 app.whenReady().then(() => {
   protocol.handle('local', (request) => {
-    const filePath = request.url.replace('local://', '');
-    return net.fetch('file://' + filePath);
+    let filePath = request.url.replace('local://', '');
+    // Ensure we handle absolute paths properly on Windows (e.g., C:/...)
+    if (process.platform === 'win32' && filePath.startsWith('/')) {
+      filePath = filePath.slice(1);
+    }
+    // Encode the path so net.fetch can read files with spaces or special characters
+    const fileUrl = 'file://' + encodeURI(filePath);
+    return net.fetch(fileUrl);
   });
 
   initDirectories();
@@ -62,4 +68,5 @@ app.whenReady().then(() => {
   ipcMain.handle('get-user-data-path', () => USER_DATA_PATH);
   ipcMain.handle('get-file-base64', (event, filePath) => getFileBase64(filePath));
   ipcMain.handle('translate-image', async (event, base64Image, profile, mimeType) => translateImage(base64Image, profile, mimeType));
+  ipcMain.handle('delete-book', (event, bookId) => deleteBook(bookId));
 });
