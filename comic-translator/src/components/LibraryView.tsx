@@ -25,6 +25,14 @@ export default function LibraryView({ activeProfile, onOpenBook }: Props) {
     setBooks(loadedBooks);
   };
 
+  const handleDeleteBook = async (e: React.MouseEvent, bookId: string) => {
+    e.stopPropagation();
+    if (window.confirm("Are you sure you want to delete this book? This action cannot be undone.")) {
+      await window.electronAPI.deleteBook(bookId);
+      loadBooks();
+    }
+  };
+
   const getCoverImage = (book: any) => {
     if (book.pages && book.pages.length > 0) {
        return `local://${userDataPath}/books/${book.id}/${book.pages[0].fileName}`;
@@ -133,6 +141,14 @@ export default function LibraryView({ activeProfile, onOpenBook }: Props) {
                      <div className="w-full h-full flex items-center justify-center text-gray-400">No Pages</div>
                   )}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+
+                  <button
+                    onClick={(e) => handleDeleteBook(e, book.id)}
+                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                    title="Delete Book"
+                  >
+                    ×
+                  </button>
                 </div>
                 <h3 className="font-semibold text-gray-900 truncate px-1">{book.name}</h3>
                 <p className="text-xs text-gray-500 px-1 mt-0.5">{book.pages ? book.pages.length : 0} pages</p>
@@ -158,8 +174,15 @@ export default function LibraryView({ activeProfile, onOpenBook }: Props) {
                   >
                     <td className="px-6 py-4 font-medium text-gray-900">{book.name}</td>
                     <td className="px-6 py-4 text-gray-600">{book.pages ? book.pages.length : 0}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 flex items-center justify-between pr-8">
                       <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-1 rounded-md">Ready</span>
+                      <button
+                        onClick={(e) => handleDeleteBook(e, book.id)}
+                        className="text-red-500 hover:text-red-700 font-bold px-2 py-1 rounded hover:bg-red-50"
+                        title="Delete Book"
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}

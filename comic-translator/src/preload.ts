@@ -9,5 +9,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   saveBookTranscript: (bookId: string, pageId: number, transcript: string) => ipcRenderer.invoke('save-book-transcript', bookId, pageId, transcript),
   getUserDataPath: () => ipcRenderer.invoke('get-user-data-path'),
   getFileBase64: (filePath: string) => ipcRenderer.invoke('get-file-base64', filePath),
-  translateImage: (base64Image: string, profile: any, mimeType: string) => ipcRenderer.invoke('translate-image', base64Image, profile, mimeType)
+  translateImage: (base64Image: string, profile: any, mimeType: string) => ipcRenderer.invoke('translate-image', base64Image, profile, mimeType),
+  deleteBook: (bookId: string) => ipcRenderer.invoke('delete-book', bookId)
 });

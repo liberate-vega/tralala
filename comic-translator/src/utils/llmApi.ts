@@ -1,5 +1,5 @@
 export async function translateImage(base64Image: string, profile: any, mimeType = 'image/jpeg'): Promise<string> {
-  const prompt = "Read and translate text in each of the comic panels in the asian style order (right to left then down) and submit a transcript of the text chronologically. Separate each speech bubble and panel with line breaks.";
+  const prompt = "Read and translate text in each of the comic panels in the asian style order (right to left then down) and submit a transcript of the text chronologically. Separate each speech bubble and panel with line breaks. Important: provide the English translated transcript of ONLY the text found in the image. Do not describe the images, characters, or what is happening in the page.";
 
   if (profile.provider === 'ollama') {
     const url = profile.endpointUrl || 'http://127.0.0.1:11434';
