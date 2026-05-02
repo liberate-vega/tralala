@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain, protocol, net } from 'electron';
 import { initDirectories, getProfiles, saveProfile, getBooks, createBook, openImagesDialog, saveBookTranscript, getFileBase64, USER_DATA_PATH } from './fileSystem';
+import { translateImage } from './utils/llmApi';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
@@ -60,4 +61,5 @@ app.whenReady().then(() => {
   ipcMain.handle('save-book-transcript', (event, bookId, pageId, transcript) => saveBookTranscript(bookId, pageId, transcript));
   ipcMain.handle('get-user-data-path', () => USER_DATA_PATH);
   ipcMain.handle('get-file-base64', (event, filePath) => getFileBase64(filePath));
+  ipcMain.handle('translate-image', async (event, base64Image, profile, mimeType) => translateImage(base64Image, profile, mimeType));
 });

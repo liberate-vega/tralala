@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import NewBookModal from './NewBookModal';
 import TranslationProgress from './TranslationProgress';
-import { translateImage } from '../utils/llmApi';
 
 interface Props {
   activeProfile: any;
@@ -53,7 +52,12 @@ export default function LibraryView({ activeProfile, onOpenBook }: Props) {
          const filePath = `${userDataPath}/books/${bookId}/${page.fileName}`;
          const base64Image = await window.electronAPI.getFileBase64(filePath);
 
-         const transcript = await translateImage(base64Image, activeProfile);
+         const extension = page.fileName.split('.').pop()?.toLowerCase();
+         let mimeType = 'image/jpeg';
+         if (extension === 'png') mimeType = 'image/png';
+         if (extension === 'webp') mimeType = 'image/webp';
+
+         const transcript = await window.electronAPI.translateImage(base64Image, activeProfile, mimeType);
          await window.electronAPI.saveBookTranscript(bookId, page.id, transcript);
 
        } catch (err: any) {

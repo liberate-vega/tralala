@@ -1,4 +1,4 @@
-export async function translateImage(base64Image: string, profile: any): Promise<string> {
+export async function translateImage(base64Image: string, profile: any, mimeType = 'image/jpeg'): Promise<string> {
   const prompt = "Read and translate text in each of the comic panels in the asian style order (right to left then down) and submit a transcript of the text chronologically. Separate each speech bubble and panel with line breaks.";
 
   if (profile.provider === 'ollama') {
@@ -32,7 +32,7 @@ export async function translateImage(base64Image: string, profile: any): Promise
             role: 'user',
             content: [
               { type: 'text', text: prompt },
-              { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${base64Image}` } }
+              { type: 'image_url', image_url: { url: `data:${mimeType};base64,${base64Image}` } }
             ]
           }
         ],
@@ -60,7 +60,7 @@ export async function translateImage(base64Image: string, profile: any): Promise
           {
             role: 'user',
             content: [
-              { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: base64Image } },
+              { type: 'image', source: { type: 'base64', media_type: mimeType, data: base64Image } },
               { type: 'text', text: prompt }
             ]
           }
@@ -82,7 +82,7 @@ export async function translateImage(base64Image: string, profile: any): Promise
           {
             parts: [
               { text: prompt },
-              { inline_data: { mime_type: 'image/jpeg', data: base64Image } }
+              { inline_data: { mime_type: mimeType, data: base64Image } }
             ]
           }
         ]
